@@ -55,7 +55,7 @@ export class AppComponent {
   constructor (public facilities:FacilitiesService) { }
 
   ngOnInit() {
-    this.facilities.getAmenities(74512).subscribe((amenities:AmenitiesIfc[]) => {
+    this.facilities.getAmenities(31521).subscribe((amenities:AmenitiesIfc[]) => {
       // TODO - filter out the layer that has the coords of the reserve itself (or just no title)
       this.layers = amenities.map((amenity) => {
         return marker(
