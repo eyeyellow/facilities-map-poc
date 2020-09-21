@@ -30,12 +30,17 @@ function popupContent(attributes: AttributesIfc): string {
   selector: 'app-root',
   template: `
     <div class="container">
-      <div leaflet style="height: 500px;"
+      <div *ngIf="layers.length; else noData"
+          leaflet style="height: 500px;"
           [leafletOptions]="options"
           [leafletLayers]="layers"
           (leafletMapReady)="onMapReady($event)"
       >
       </div>
+      <ng-template #noData>
+        <h2>No Facilities Data</h2>
+        <p>There is no data for this refuge.</p>
+      </ng-template>
     <div>
   `,
   styles: [
@@ -49,7 +54,6 @@ function popupContent(attributes: AttributesIfc): string {
 
 export class AppComponent {
   title = 'facilities-map-poc';
-  _map: Map;
   layers: Layer[] = [];
   options = {
       layers: [
@@ -65,6 +69,7 @@ export class AppComponent {
 
   ngOnInit() {
     this.facilities.getAmenities(31521).subscribe((amenities:AmenitiesIfc[]) => {
+      if (!amenities || !amenities.length) return;
       amenities.forEach((amenity) => {
         // Filter out any amenity that doesn't have a name
         if (!amenity.attributes.Name.trim()) return;
@@ -77,12 +82,11 @@ export class AppComponent {
         markerLayer.bindPopup(popupContent(amenity.attributes));
         this.layers.push(markerLayer);
       })
-      // TODO - eventually add clusters to the map
-      this._map.fitBounds(featureGroup(this.layers).getBounds().pad(.1));
     });
   }
 
   onMapReady(map: Map) {
-    this._map = map;
+    // TODO - eventually add clusters to the map
+    map.fitBounds(featureGroup(this.layers).getBounds().pad(.1));
   }
 }
