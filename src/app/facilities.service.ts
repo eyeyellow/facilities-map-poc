@@ -1,7 +1,9 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
+import { AMENITIES_APP_CONFIG, AmenitiesAppConfig } from './AmenitiesAppConfig';
 
 const BASE_URL = 'https://services.arcgis.com/QVENGdaPbd4LUkLV/arcgis/rest/services/FWS_National_Visitor_Service_Amenities_View/FeatureServer/0/query';
 
@@ -21,9 +23,9 @@ export interface AmenitiesIfc {
   geometry: GeometryIfc
 }
 
-function setParams(orgID): { [param: string]: string } {
+function setParams(orgCode): { [param: string]: string } {
   return {
-    'where=OrgCode': orgID,
+    'where=OrgCode': orgCode,
     'outFields': 'Name,Public_Use,Han_Access',
     'outSR': '4326',
     'f': 'json'
@@ -35,11 +37,18 @@ function setParams(orgID): { [param: string]: string } {
 })
 
 export class FacilitiesService {
+  readonly orgCode: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    @Inject(AMENITIES_APP_CONFIG) public config: AmenitiesAppConfig
+  ) {
+    this.orgCode = config.org_code;
+    console.log(this.orgCode);
+  }
 
-  getAmenities(orgID:number): Observable<AmenitiesIfc[]> {
-    return this.http.get<any>(BASE_URL, { params: setParams(orgID) })
+  getAmenities(): Observable<AmenitiesIfc[]> {
+    return this.http.get<any>(BASE_URL, { params: setParams(this.orgCode) })
       .pipe(map((response) => response.features))
   }
 }

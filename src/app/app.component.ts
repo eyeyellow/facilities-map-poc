@@ -4,9 +4,9 @@ import { tileLayer, latLng, Map, marker, Layer, featureGroup, icon, Marker } fro
 
 import { AmenitiesIfc, AttributesIfc, FacilitiesService } from './facilities.service';
 
-const iconRetinaUrl = 'assets/marker-icon-2x.png';
-const iconUrl = 'assets/marker-icon.png';
-const shadowUrl = 'assets/marker-shadow.png';
+const iconRetinaUrl = '/modules/custom/fws_facility/amenities_app/assets/marker-icon-2x.png';
+const iconUrl = '/modules/custom/fws_facility/amenities_app/assets/marker-icon.png';
+const shadowUrl = '/modules/custom/fws_facility/amenities_app/assets/marker-shadow.png';
 const iconDefault = icon({
   iconRetinaUrl,
   iconUrl,
@@ -27,7 +27,7 @@ function popupContent(attributes: AttributesIfc): string {
 }
 
 @Component({
-  selector: 'app-root',
+  selector: 'fws-amenities-app',
   template: `
     <div class="container">
       <div *ngIf="loaded; else loading">
@@ -39,8 +39,8 @@ function popupContent(attributes: AttributesIfc): string {
         >
         </div>
         <ng-template #noData>
-          <h2>No Facilities Data</h2>
-          <p>There is no data for this refuge.</p>
+          <h2>No Facilities</h2>
+          <p>There are no facilities for this refuge.</p>
         </ng-template>
       </div>
       <ng-template #loading>
@@ -74,7 +74,7 @@ export class AppComponent {
   constructor (public facilities:FacilitiesService) { }
 
   ngOnInit() {
-    this.facilities.getAmenities(31521).subscribe((amenities:AmenitiesIfc[]) => {
+    this.facilities.getAmenities().subscribe((amenities:AmenitiesIfc[]) => {
       this.loaded = true;
       if (!amenities || !amenities.length) return;
       amenities.forEach((amenity) => {

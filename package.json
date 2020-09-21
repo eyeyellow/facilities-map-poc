@@ -7,7 +7,10 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "module-watch": "ng build --watch --output-path ../fws-gov/modules/custom/fws_facility/amenities_app",
+    "module-build": "ng build --prod --output-path ../fws-gov/modules/custom/fws_facility/amenities_app",
+    "module-build-noops": "ng build --optimizations=false --prod --output-path ../fws-gov/modules/custom/fws_facility/amenities_app"
   },
   "private": true,
   "dependencies": {

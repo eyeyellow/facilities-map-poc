@@ -4,7 +4,12 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
+import { AmenitiesAppConfig, AMENITIES_APP_CONFIG } from './AmenitiesAppConfig';
 import { AppComponent } from './app.component';
+
+function amenitiesAppConfigFactory(): AmenitiesAppConfig {
+  return window['fws_amenities_app_config'];
+}
 
 @NgModule({
   declarations: [
@@ -15,7 +20,12 @@ import { AppComponent } from './app.component';
     HttpClientModule,
     LeafletModule
   ],
-  providers: [],
+  providers: [
+    { 
+      provide: AMENITIES_APP_CONFIG,
+      useFactory: amenitiesAppConfigFactory
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
