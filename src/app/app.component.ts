@@ -30,17 +30,22 @@ function popupContent(attributes: AttributesIfc): string {
   selector: 'app-root',
   template: `
     <div class="container">
-      <div *ngIf="layers.length; else noData"
-          leaflet style="height: 500px;"
-          [leafletOptions]="options"
-          [leafletLayers]="layers"
-          (leafletMapReady)="onMapReady($event)"
-      >
+      <div *ngIf="loaded; else loading">
+        <div *ngIf="layers.length; else noData"
+            leaflet style="height: 500px;"
+            [leafletOptions]="options"
+            [leafletLayers]="layers"
+            (leafletMapReady)="onMapReady($event)"
+        >
+        </div>
+        <ng-template #noData>
+          <h2>No Facilities Data</h2>
+          <p>There is no data for this refuge.</p>
+        </ng-template>
       </div>
-      <ng-template #noData>
-        <h2>No Facilities Data</h2>
-        <p>There is no data for this refuge.</p>
-      </ng-template>
+      <ng-template #loading>
+          <h2>Loading...</h2>
+        </ng-template>
     <div>
   `,
   styles: [
@@ -54,6 +59,7 @@ function popupContent(attributes: AttributesIfc): string {
 
 export class AppComponent {
   title = 'facilities-map-poc';
+  loaded: boolean = false;
   layers: Layer[] = [];
   options = {
       layers: [
@@ -69,6 +75,7 @@ export class AppComponent {
 
   ngOnInit() {
     this.facilities.getAmenities(31521).subscribe((amenities:AmenitiesIfc[]) => {
+      this.loaded = true;
       if (!amenities || !amenities.length) return;
       amenities.forEach((amenity) => {
         // Filter out any amenity that doesn't have a name
